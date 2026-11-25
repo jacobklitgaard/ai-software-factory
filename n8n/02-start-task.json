@@ -1,0 +1,329 @@
+{
+  "name": "02-start-task",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        -96
+      ],
+      "id": "f92e3e3c-7ce6-4e44-9a39-d2f0f9ccb05c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "getRepositoryIssuesFilters": {
+          "labels": "Building",
+          "state": "open"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -96
+      ],
+      "id": "6baa7f31-b609-4e5c-92b1-66f7477d15e9",
+      "name": "Get Building",
+      "webhookId": "1c83decb-65a4-41a7-8d2d-ea76d1b021c2",
+      "alwaysOutputData": true,
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "70aedced-0c20-4dba-9cee-be5b7971e7b4",
+              "leftValue": "={{ $json.number }}",
+              "rightValue": "",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        -96
+      ],
+      "id": "cbf18a39-ec1c-476d-b6ff-a13f163d3264",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sortFieldsUi": {
+          "sortField": [
+            {
+              "fieldName": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.sort",
+      "typeVersion": 1,
+      "position": [
+        896,
+        -96
+      ],
+      "id": "b0386e78-3e2a-4d57-846d-7411cf0993fe",
+      "name": "Sort"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.limit",
+      "typeVersion": 1,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "104cb5a1-ccc5-4d6b-b3a9-9bf0dfc2729c",
+      "name": "Limit"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "getRepositoryIssuesFilters": {
+          "labels": "Approved",
+          "state": "open"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        672,
+        -96
+      ],
+      "id": "edf834f7-e956-43da-a170-5d6f7fb3aacc",
+      "name": "Get Approved",
+      "webhookId": "ebc1b9fe-f6b0-4d32-a0b9-e4dcdbd2734b",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "Building"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -96
+      ],
+      "id": "2b5e1f53-8ed0-4f72-b53a-106faab8d209",
+      "name": "Set Building",
+      "webhookId": "0f343ed9-7ed1-4746-a52b-2975471a308e",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $('Limit').item.json.number }}",
+        "body": "=Status: Building. Work on the branch issue-{{ $json.number }}."
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        -96
+      ],
+      "id": "427f0fb1-bcd3-4671-8906-8ba551b053f4",
+      "name": "Add Comment",
+      "webhookId": "79e15112-dcdd-4253-bc3f-2e0399ec61a7",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Building",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Building": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Get Approved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sort": {
+      "main": [
+        [
+          {
+            "node": "Limit",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Limit": {
+      "main": [
+        [
+          {
+            "node": "Set Building",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Approved": {
+      "main": [
+        [
+          {
+            "node": "Sort",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Building": {
+      "main": [
+        [
+          {
+            "node": "Add Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "d861fb26-c656-471c-be51-6eac0b68e02c",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "244e36795973ec6924748198112b0fed5d19b8f4e801b0ca8e03d1a94aa7b070"
+  },
+  "nodeGroups": [],
+  "id": "wo1nJ8EhxkfEamxp",
+  "tags": []
+}
