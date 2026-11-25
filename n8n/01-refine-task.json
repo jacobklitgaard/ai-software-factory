@@ -1,0 +1,304 @@
+{
+  "name": "01 - Refine task",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 3
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "f0824756-165f-4da5-bdb6-0b88e20ade42",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "getRepositoryIssuesFilters": {
+          "labels": "Ideas",
+          "state": "open"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "b8a87f51-d17a-49be-ba83-c871d88b4a69",
+      "name": "Get Ideas",
+      "webhookId": "633f6216-239d-445f-8980-83833a3bd2bc",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "Refining"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "ee036a1e-aac9-40b6-8f48-95379d7409fa",
+      "name": "Set Refining",
+      "webhookId": "915492ee-6a88-4446-8047-15e6fb0618fd",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Title: {{ $('Get Ideas').item.json.title }}\n\nRough task:\n{{ $('Get Ideas').item.json.body }}",
+        "messages": {
+          "messageValues": [
+            {
+              "message": "=You are the refinement step of a small software factory. A human writes\na rough task. You rewrite it into a plain, complete task for a coding\nagent, following the template below exactly.\n\nRules:\n- Do not invent requirements. If something is unclear, put it under\n  \"Questions for the human\" instead of guessing.\n- Acceptance criteria must be checkable by a test or a person.\n  \"Looks good\" is not checkable.\n- Keep the task small enough for one pull request. If it is clearly\n  too big, say so under \"Questions for the human\" and suggest a split.\n- You advise only. You never approve a task.\n- Output only the filled template in Markdown, nothing before or after.\n\nTemplate:\n## What to build\n## Why\n## Constraints\n## Acceptance criteria\n- [ ] ...\n## Out of scope\n## Depends on\n## Questions for the human"
+            }
+          ]
+        },
+        "batching": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        672,
+        0
+      ],
+      "id": "a5970a4f-0367-4180-aabd-b643730137a3",
+      "name": "Refine Task"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        752,
+        240
+      ],
+      "id": "73573d9b-2b52-4e13-9904-f92a8e334573",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "5mMQxPaoD9Ou3i2Q",
+          "name": "OpenAI account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $('Get Ideas').item.json.number }}",
+        "body": "=Refined by the AI step. Add the label Approved to approve, or comment to discuss.\n\n{{ $json.text }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1024,
+        0
+      ],
+      "id": "8da2f2d1-a420-4dbc-a60f-41ec997d5595",
+      "name": "Add Comment",
+      "webhookId": "bf4a323b-044e-4c61-b3ab-2f8199e57d54",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $('Get Ideas').item.json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "Ready for approval"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1248,
+        0
+      ],
+      "id": "ce235e32-6813-404d-a2d4-968e5d01334b",
+      "name": "Set Ready",
+      "webhookId": "3f5fadc7-1594-4829-b726-afd0d948c7ec",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get Ideas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Ideas": {
+      "main": [
+        [
+          {
+            "node": "Set Refining",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Refining": {
+      "main": [
+        [
+          {
+            "node": "Refine Task",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Refine Task",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Refine Task": {
+      "main": [
+        [
+          {
+            "node": "Add Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add Comment": {
+      "main": [
+        [
+          {
+            "node": "Set Ready",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "5cf33b17-f069-4c83-9cb4-9601eeaa5703",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "244e36795973ec6924748198112b0fed5d19b8f4e801b0ca8e03d1a94aa7b070"
+  },
+  "nodeGroups": [],
+  "id": "DCaEYENX4p5SuJgd",
+  "tags": []
+}
