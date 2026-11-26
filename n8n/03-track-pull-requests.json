@@ -6,7 +6,8 @@
         "rule": {
           "interval": [
             {
-              "field": "minutes"
+              "field": "minutes",
+              "minutesInterval": 3
             }
           ]
         }
@@ -69,10 +70,10 @@
             {
               "id": "45e71d55-235d-4561-b13f-4b0c96e6ecae",
               "leftValue": "={{ $json.head.ref }}",
-              "rightValue": "issue-",
+              "rightValue": "^issue-\\d+$",
               "operator": {
                 "type": "string",
-                "operation": "startsWith"
+                "operation": "regex"
               }
             }
           ],
@@ -405,10 +406,10 @@
             {
               "id": "45e71d55-235d-4561-b13f-4b0c96e6ecae",
               "leftValue": "={{ $json.head.ref }}",
-              "rightValue": "issue-",
+              "rightValue": "^issue-\\d+$",
               "operator": {
                 "type": "string",
-                "operation": "startsWith"
+                "operation": "regex"
               }
             }
           ],
@@ -600,12 +601,12 @@
       ]
     }
   },
-  "active": false,
+  "active": true,
   "settings": {
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "5ed88a75-47d1-4301-851c-e8d6755859a8",
+  "versionId": "6c9cea7e-1dcd-42ff-9953-31f28e2070bc",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "244e36795973ec6924748198112b0fed5d19b8f4e801b0ca8e03d1a94aa7b070"
