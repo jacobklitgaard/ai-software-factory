@@ -1,5 +1,5 @@
 {
-  "name": "03-track-pull-reqests",
+  "name": "03-track-pull-requests",
   "nodes": [
     {
       "parameters": {
@@ -15,7 +15,7 @@
       "typeVersion": 1.4,
       "position": [
         0,
-        0
+        -96
       ],
       "id": "e16f7a12-60a3-4d10-9fa4-21c51da5d322",
       "name": "Schedule Trigger"
@@ -44,7 +44,7 @@
       "typeVersion": 1.1,
       "position": [
         224,
-        0
+        -96
       ],
       "id": "364d82a4-dfd0-41bb-9c07-92a5c8e9e3f0",
       "name": "Get Closed PRs",
@@ -84,7 +84,7 @@
       "typeVersion": 2.4,
       "position": [
         448,
-        0
+        -96
       ],
       "id": "40e8e667-fbf8-4650-8e8c-c0ecb817ac26",
       "name": "Filter"
@@ -107,7 +107,7 @@
       "typeVersion": 3.5,
       "position": [
         672,
-        0
+        -96
       ],
       "id": "599bf945-7703-46c5-aa4f-7f4ccadc3448",
       "name": "Get Number"
@@ -133,11 +133,86 @@
       "typeVersion": 1.1,
       "position": [
         896,
-        0
+        -96
       ],
       "id": "59c0edad-c2ff-4547-84ee-4c446eaeb306",
       "name": "Get Issue",
       "webhookId": "4d50961b-b09c-41f5-bfcf-60f306bb482c",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "18dba2bb-345c-47bf-8455-fb668eca5ac9",
+              "leftValue": "={{ $json.labels.map(l => l.name).includes('Your QA') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1120,
+        -96
+      ],
+      "id": "d7cf986d-26c8-4cdf-8e75-b5d4831718b3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "Done"
+            }
+          ],
+          "state": "closed"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -96
+      ],
+      "id": "0bab4da4-f2b2-40e1-bde0-664ac562a573",
+      "name": "Set Done",
+      "webhookId": "ce1c047f-3ac9-43be-9601-07bd91a10b03",
       "credentials": {
         "githubApi": {
           "id": "J47f96P8WtDM0tcz",
@@ -191,6 +266,28 @@
           }
         ]
       ]
+    },
+    "Get Issue": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Set Done",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -198,7 +295,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "b08bb1d0-eaa9-4373-8bc8-4f1b9fbb1225",
+  "versionId": "4166ddb8-e6f0-49ed-a41b-ed7abb80a8a6",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "244e36795973ec6924748198112b0fed5d19b8f4e801b0ca8e03d1a94aa7b070"
