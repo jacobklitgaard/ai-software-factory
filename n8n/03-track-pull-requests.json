@@ -15,7 +15,7 @@
       "typeVersion": 1.4,
       "position": [
         0,
-        -96
+        -272
       ],
       "id": "e16f7a12-60a3-4d10-9fa4-21c51da5d322",
       "name": "Schedule Trigger"
@@ -44,7 +44,7 @@
       "typeVersion": 1.1,
       "position": [
         224,
-        -96
+        -176
       ],
       "id": "364d82a4-dfd0-41bb-9c07-92a5c8e9e3f0",
       "name": "Get Closed PRs",
@@ -84,7 +84,7 @@
       "typeVersion": 2.4,
       "position": [
         448,
-        -96
+        -176
       ],
       "id": "40e8e667-fbf8-4650-8e8c-c0ecb817ac26",
       "name": "Filter"
@@ -107,7 +107,7 @@
       "typeVersion": 3.5,
       "position": [
         672,
-        -96
+        -176
       ],
       "id": "599bf945-7703-46c5-aa4f-7f4ccadc3448",
       "name": "Get Number"
@@ -133,7 +133,7 @@
       "typeVersion": 1.1,
       "position": [
         896,
-        -96
+        -176
       ],
       "id": "59c0edad-c2ff-4547-84ee-4c446eaeb306",
       "name": "Get Issue",
@@ -157,7 +157,7 @@
           "conditions": [
             {
               "id": "18dba2bb-345c-47bf-8455-fb668eca5ac9",
-              "leftValue": "={{ $json.labels.map(l => l.name).includes('Your QA') }}",
+              "leftValue": "={{ $json.labels.map(l => l.name).some(n => n === 'Your QA' || n === 'Building') }}",
               "rightValue": "",
               "operator": {
                 "type": "boolean",
@@ -174,7 +174,7 @@
       "typeVersion": 2.4,
       "position": [
         1120,
-        -96
+        -176
       ],
       "id": "d7cf986d-26c8-4cdf-8e75-b5d4831718b3",
       "name": "If"
@@ -208,7 +208,7 @@
       "typeVersion": 1.1,
       "position": [
         1344,
-        -96
+        -176
       ],
       "id": "0bab4da4-f2b2-40e1-bde0-664ac562a573",
       "name": "Set Done",
@@ -219,6 +219,245 @@
           "name": "GitHub account"
         }
       }
+    },
+    {
+      "parameters": {
+        "resource": "repository",
+        "operation": "getPullRequests",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "getRepositoryPullRequestsFilters": {
+          "state": "open"
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        -368
+      ],
+      "id": "afa86f26-dc59-4f0c-a592-010810d9335a",
+      "name": "Get Open PRs",
+      "webhookId": "fa1b1780-e6cc-48c6-8bba-fc8f74923a4e",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "edit",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $json.number }}",
+        "editFields": {
+          "labels": [
+            {
+              "label": "Your QA"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1344,
+        -368
+      ],
+      "id": "923e049d-20c6-460f-b316-5e8d9db675a5",
+      "name": "Set Your QA",
+      "webhookId": "ce1c047f-3ac9-43be-9601-07bd91a10b03",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "a27ee326-2d68-4a26-bb4f-0a5a6552316a",
+              "name": "prNumber",
+              "value": "={{ $json.number }}",
+              "type": "string"
+            },
+            {
+              "id": "3d3cb5b2-7ff4-4cf6-afb3-0c8536082699",
+              "name": "issueNumber",
+              "value": "={{ $json.head.ref.replace('issue-', '') }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        -368
+      ],
+      "id": "24a5d0d5-5111-45d6-ae31-4a998701585e",
+      "name": "Get Number (A)"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $json.issueNumber }}"
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        896,
+        -368
+      ],
+      "id": "602627e8-8063-44ca-a046-5ab7a5d12ca7",
+      "name": "Get Issue (A)",
+      "webhookId": "4d50961b-b09c-41f5-bfcf-60f306bb482c",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "createComment",
+        "owner": {
+          "__rl": true,
+          "value": "jacobklitgaard",
+          "mode": "name"
+        },
+        "repository": {
+          "__rl": true,
+          "value": "ai-software-factory",
+          "mode": "list",
+          "cachedResultName": "ai-software-factory",
+          "cachedResultUrl": "https://github.com/jacobklitgaard/ai-software-factory"
+        },
+        "issueNumber": "={{ $('Get Number (A)').item.json.issueNumber }}",
+        "body": "=Pull request #{{ $('Get Number (A)').item.json.prNumber }} is ready for your review."
+      },
+      "type": "n8n-nodes-base.github",
+      "typeVersion": 1.1,
+      "position": [
+        1568,
+        -368
+      ],
+      "id": "e4dc9376-4bfc-4e73-9063-9d16458a46d0",
+      "name": "Add Comment",
+      "webhookId": "3782eb5b-a3e3-43af-a2a5-a2de3ef8facf",
+      "credentials": {
+        "githubApi": {
+          "id": "J47f96P8WtDM0tcz",
+          "name": "GitHub account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "45e71d55-235d-4561-b13f-4b0c96e6ecae",
+              "leftValue": "={{ $json.head.ref }}",
+              "rightValue": "issue-",
+              "operator": {
+                "type": "string",
+                "operation": "startsWith"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        -368
+      ],
+      "id": "ca1412b1-1c2c-410c-8768-58ef7d578a20",
+      "name": "Filter (A)"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "18dba2bb-345c-47bf-8455-fb668eca5ac9",
+              "leftValue": "={{ $json.labels.map(l => l.name).includes('Building') }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        1120,
+        -368
+      ],
+      "id": "70304f8b-e101-431c-801c-fac631a1927e",
+      "name": "If (A)"
     }
   ],
   "pinData": {},
@@ -228,6 +467,11 @@
         [
           {
             "node": "Get Closed PRs",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get Open PRs",
             "type": "main",
             "index": 0
           }
@@ -288,6 +532,72 @@
           }
         ]
       ]
+    },
+    "Get Open PRs": {
+      "main": [
+        [
+          {
+            "node": "Filter (A)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Your QA": {
+      "main": [
+        [
+          {
+            "node": "Add Comment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Number (A)": {
+      "main": [
+        [
+          {
+            "node": "Get Issue (A)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Issue (A)": {
+      "main": [
+        [
+          {
+            "node": "If (A)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter (A)": {
+      "main": [
+        [
+          {
+            "node": "Get Number (A)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If (A)": {
+      "main": [
+        [
+          {
+            "node": "Set Your QA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": false,
@@ -295,7 +605,7 @@
     "executionOrder": "v1",
     "binaryMode": "separate"
   },
-  "versionId": "4166ddb8-e6f0-49ed-a41b-ed7abb80a8a6",
+  "versionId": "5ed88a75-47d1-4301-851c-e8d6755859a8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "244e36795973ec6924748198112b0fed5d19b8f4e801b0ca8e03d1a94aa7b070"
