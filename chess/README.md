@@ -1,7 +1,9 @@
-# Chessboard (issue #3)
+# Chess
 
-Static board showing both players' pieces in the starting position. No move logic.
+Chess is a two-player chess board that runs in the browser.
 
-- Run: open `index.html` in a browser (no build step, works from file://).
-- Test: `node --test` in this folder.
-- Each square has `data-square="e1"` etc. and an `aria-label` for inspection.
+## How to open it
+
+Open `chess/index.html` in a browser. There is no install or build step.
+
+To run the tests, run `node --test` in the `chess/` folder.
